@@ -1,0 +1,7 @@
+--upgrade setuptools
+--upgrade pip
+dlib
+face_recognition
+numpy
+opencv-python
+
