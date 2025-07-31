@@ -1,0 +1,15 @@
+# python.exe -m pip install --upgrade pip
+# pip install --upgrade setuptools
+# pip install -r library.txt --user
+numpy
+opencv-python
+onnxruntime
+insightface
+psutil 
+# pynvml
+faiss-cpu
+#thư viện dành cho face_recognition
+#dlib
+#face_recognition
+# git config --global user.name "John Doe"
+# $ git config --global user.email johndoe@example.com
