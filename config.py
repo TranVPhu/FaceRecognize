@@ -49,3 +49,17 @@ MAX_WORKERS = config["MAX_WORKERS"] # Thêm biến mới
 RECOGNITION_TOLERANCE = 0.6
 MOTION_THRESHOLD = 25
 DB_NAME = 'student_faces.db'
+
+# Danh sách thuật toán phát hiện khuôn mặt
+FACE_DETECTION_ALGORITHMS = [
+    "Haar Cascade",
+    "MTCNN",
+    "Dlib HOG"
+]
+
+# Danh sách thuật toán nhận diện khuôn mặt
+FACE_RECOGNITION_ALGORITHMS = [
+    "ArcFace",
+    "FaceNet",
+    "OpenFace"
+]

@@ -9,7 +9,7 @@ import faiss_manager
 import cv2
 import numpy as np
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, 
-                             QPushButton, QListWidget, QGroupBox, QHBoxLayout, 
+                             QPushButton, QListWidget, QComboBox, QGroupBox, QHBoxLayout, 
                              QFileDialog, QMessageBox, QListWidgetItem, QGridLayout,
                              QStatusBar, QStyle, QDialog, QSlider,
                              QStyleOptionSlider)
@@ -18,7 +18,9 @@ from PyQt5.QtGui import QPixmap, QImage, QPainter, QColor, QPen
 import database_manager as db
 from face_processor import FaceProcessor
 from add_student_dialog import AddStudentDialog
-from config import RESIZE_FACTOR
+from config import (RESIZE_FACTOR,
+                    FACE_DETECTION_ALGORITHMS,
+                    FACE_RECOGNITION_ALGORITHMS)
 from scaler import FixedScaler
 from Video_Thread import VideoThread
 from time import time
@@ -96,7 +98,9 @@ class MainWindow(QMainWindow):
         # --- Bước 3: Khai báo trước các biến sẽ chứa Widget (được tạo trong init_ui) ---
         self.image_label = None
         self.student_list_widget = None
-        
+        self.detect_algo_combo = None
+        self.recognize_algo_combo = None
+
         # Widget điều khiển video và các thành phần
         self.video_controls_widget = None
         self.play_pause_button = None
@@ -152,6 +156,8 @@ class MainWindow(QMainWindow):
         # 📷 Cột trái: Ảnh/video + điều khiển video (gộp vào layout dọc)
         # -------------------------
         left_v_layout = QVBoxLayout()
+        algorithm_group = self.create_algorithm_group()
+        
 
         self.image_label = QLabel("Mở nguồn video để bắt đầu")
         self.image_label.setStyleSheet("border: 2px solid #ccc; background-color: #f0f0f0;")
@@ -161,7 +167,8 @@ class MainWindow(QMainWindow):
         # 👉 Cho phép điều chỉnh kích thước ảnh (có thể cố định nếu muốn)
         self.image_label.setFixedWidth(640)
         self.image_label.setFixedHeight(480)
-
+        
+        left_v_layout.addWidget(algorithm_group)
         left_v_layout.addWidget(self.image_label)
 
         # 🎚️ Thanh điều khiển video nằm ngay dưới video
@@ -199,6 +206,35 @@ class MainWindow(QMainWindow):
         self.student_list_widget.itemClicked.connect(self.display_student_info)
         self.image_label.mousePressEvent = self.on_image_click
 
+    def create_algorithm_group(self):
+        """Tạo group box cho lựa chọn thuật toán."""
+        group = QGroupBox("Thuật toán")
+        layout = QGridLayout()
+
+        self.detect_algo_combo = QComboBox()
+        self.detect_algo_combo.addItems(FACE_DETECTION_ALGORITHMS)
+
+        self.recognize_algo_combo = QComboBox()
+        self.recognize_algo_combo.addItems(FACE_RECOGNITION_ALGORITHMS)
+
+        detect_row = QHBoxLayout()
+        detect_row.addWidget(QLabel("Detect"))
+        detect_row.addWidget(self.detect_algo_combo)
+        
+
+        recognize_row = QHBoxLayout()
+        recognize_row.addWidget(QLabel("Recognize"))
+        recognize_row.addWidget(self.recognize_algo_combo)
+        
+
+        layout.addLayout(detect_row, 0, 0)
+        layout.addLayout(recognize_row, 0, 1)
+        layout.setContentsMargins(10, 0, 280, 0)    #left, top, right, bottom  
+        layout.setHorizontalSpacing(30)  
+        
+        group.setLayout(layout)
+        return group
+    
     def create_list_group(self):
         """Tạo group box cho danh sách học sinh nhận diện."""
         group = QGroupBox("Danh sách nhận diện")
