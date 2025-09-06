@@ -89,13 +89,29 @@ def update_student(student_id, new_name, new_dob, new_class, new_gender, new_sch
     """Cập nhật tên và lớp cho học sinh dựa trên ID."""
     try:
         with sqlite3.connect(db_path) as conn:
-            cursor = conn.cursor()
-            encoding_blob = None
+            cursor = conn.cursor()     
+            query = (
+                "UPDATE students SET name = ?, dob = ?, class = ?, gender = ?, "
+                "school_year = ?, stt = ?, image_path = ?"
+            )
+            params = [
+                new_name,
+                new_dob,
+                new_class,
+                new_gender,
+                new_school_year,
+                new_stt,
+                new_image_path,
+            ]
             if face_encoding is not None:
                 encoding_blob = face_encoding.astype(np.float64).tobytes()
+                query += ", face_encoding = ?"
+                params.append(encoding_blob)
 
-            cursor.execute("UPDATE students SET name = ?, dob = ?, class = ?, gender = ?, school_year = ?, stt = ?, image_path = ?, face_encoding = ? WHERE id = ?",
-                        (new_name, new_dob, new_class, new_gender, new_school_year, new_stt, new_image_path, encoding_blob, student_id))
+            query += " WHERE id = ?"
+            params.append(student_id)
+            
+            cursor.execute(query, params)
             conn.commit()
             return cursor.rowcount > 0 # Trả về True nếu có hàng được cập nhật
     except sqlite3.Error as e:

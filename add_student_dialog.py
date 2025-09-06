@@ -160,10 +160,15 @@ class AddStudentDialog(QDialog):
         file_name, _ = QFileDialog.getOpenFileName(self, "Mở Ảnh", "", "Image Files (*.jpg *.png *.jpeg)")
         if not file_name:
             return
+        
         capture_img = cv2.imread(file_name)
+        if capture_img is None:
+            QMessageBox.warning(self, "Lỗi", "Không thể mở ảnh đã chọn.")
+            return
+        
         scaled_image = cv2.resize(capture_img, (320, 320))
         code = self.code_input.text().strip()
-        setfilename = f"{code}.jpg"
+        filename = f"{code}.jpg"
         # Lấy thư mục dự án (hoặc thư mục chứa DB)
         base_dir = os.path.dirname(db.get_db_path())
 
@@ -171,7 +176,7 @@ class AddStudentDialog(QDialog):
         images_dir = os.path.join(base_dir, "images")
 
         # Tạo đường dẫn ảnh đầy đủ
-        image_path = os.path.join(images_dir, setfilename)
+        image_path = os.path.join(images_dir, filename)
 
         if scaled_image is not None:
             os.remove(image_path)

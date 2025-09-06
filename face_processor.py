@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import insightface
 import gc
+import math
 import logging
 import faiss
 from config import RESIZE_FACTOR, RECOGNITION_TOLERANCE, DET_SIZE, MAX_WORKERS
@@ -75,7 +76,9 @@ class FaceProcessor:
         # Thì ngưỡng khoảng cách là sqrt(2 * (1 - 0.4)) = sqrt(1.2) ~= 1.095
         # Bạn cần tinh chỉnh lại ngưỡng này cho phù hợp
         # InsightFace thường dùng ngưỡng cosine là 0.5, tương ứng L2 là 1.0
-        DISTANCE_THRESHOLD = 1.0 
+        # RECOGNITION_TOLERANCE biểu thị ngưỡng khoảng cách cho phép (1 - S)
+        # Ví dụ: tolerance 0.6 -> S = 0.4 -> ngưỡng L2 ≈ sqrt(1.2) ≈ 1.095
+        DISTANCE_THRESHOLD = math.sqrt(2 * RECOGNITION_TOLERANCE) 
 
         # known_students giờ được dùng để tra cứu tên từ ID
         known_students_dict = {s["id"]: s for s in known_students}
