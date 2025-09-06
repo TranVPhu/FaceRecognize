@@ -23,7 +23,7 @@ class FaceProcessor:
         except Exception as e:
             logging.warning(f"Không tìm thấy GPU hoặc lỗi khi khởi tạo CUDA: {e}")
             # Fallback sang CPU
-            self.model = insightface.app.FaceAnalysis(name='buffalo_s', providers=['CPUExecutionProvider'])
+            self.model = insightface.app.FaceAnalysis(name='buffalo_sc', providers=['CPUExecutionProvider'])
             self.model.prepare(ctx_id=-1, det_size=DET_SIZE)
             logging.info("Khởi tạo FaceProcessor với CPUExecutionProvider.")
         self.executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
